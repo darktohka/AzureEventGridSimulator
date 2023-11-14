@@ -9,7 +9,7 @@ ARG TARGETARCH
 RUN arch=$TARGETARCH \
     && if [ "$TARGETARCH" = "amd64" ]; then arch="x64"; fi \
     && echo $arch > /tmp/arch
-    
+
 # build source and publish as single file called 'AzureEventGridSimulator'
 RUN dotnet publish -c release -o /artifact \
     -r alpine-$(cat /tmp/arch) \
@@ -25,7 +25,7 @@ RUN dotnet publish -c release -o /artifact \
 
 # add binary artifact to new runtime-deps only image
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime-deps:7.0-alpine
-WORKDIR /app
+WORKDIR /data
 
 # add tzdata incase we want to set the timezone
 RUN apk add --no-cache tzdata
@@ -33,6 +33,6 @@ RUN apk add --no-cache tzdata
 ENV ASPNETCORE_URLS=
 
 # copy the binary only
-COPY --from=build /artifact/AzureEventGridSimulator .
+COPY --from=build /artifact/AzureEventGridSimulator /app/
 
-ENTRYPOINT ["./AzureEventGridSimulator"]
+ENTRYPOINT ["/app/AzureEventGridSimulator"]

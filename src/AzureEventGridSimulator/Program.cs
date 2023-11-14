@@ -113,7 +113,6 @@ public class Program
             }
 
             await mediator.Send(new ValidateAllSubscriptionsCommand());
-
             Log.Information("It's alive !");
         }
         catch (Exception e)
@@ -175,7 +174,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddSimulatorSettings(configuration);
-        builder.Services.AddMediatR(o=> o.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        builder.Services.AddMediatR(o => o.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
         var httpClientBuilder = builder.Services.AddHttpClient(nameof(AzureEventGridSimulator));
         if (configuration.GetValue<bool>("dangerousAcceptAnyServerCertificateValidator"))
@@ -226,14 +225,27 @@ public class Program
             // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
             Log.Verbose(((IConfigurationRoot)configuration).GetDebugView().Normalize());
 
-            options.ConfigureSimulatorCertificate();
+            bool https = configuration.GetValue("useHttps", false);
+
+            if (https)
+            {
+                options.ConfigureSimulatorCertificate();
+            }
 
             foreach (var topics in options.ApplicationServices.EnabledTopics())
             {
-                options.Listen(IPAddress.Any,
-                               topics.Port,
-                               listenOptions => listenOptions
-                                   .UseHttps());
+                if (https)
+                {
+                    options.Listen(IPAddress.Any,
+                                   topics.Port,
+                                   listenOptions => listenOptions.UseHttps());
+                }
+                else
+                {
+                    options.Listen(IPAddress.Any,
+                                   topics.Port);
+                }
+
             }
         });
 

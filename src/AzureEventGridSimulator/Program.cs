@@ -225,7 +225,7 @@ public class Program
             // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
             Log.Verbose(((IConfigurationRoot)configuration).GetDebugView().Normalize());
 
-            bool https = configuration.GetValue("useHttps", false);
+            bool https = configuration.GetValue("useHttps", true);
 
             if (https)
             {

@@ -43,12 +43,12 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
 
       - name: setup dotnet core
-        uses: actions/setup-dotnet@v3.2.0
+        uses: actions/setup-dotnet@v4.0.1
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: get the code
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.7
 
       - name: clean
         run: dotnet clean
@@ -110,7 +110,7 @@ jobs:
           dest: AzureEventGridSimulator-${{ matrix.runtime }}-${{ env.VERSION_NUMBER }}.zip
 
       - name: release artifacts
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: ${{ env.VERSION_NUMBER }}
           tag_name: ${{ env.VERSION_NUMBER }}

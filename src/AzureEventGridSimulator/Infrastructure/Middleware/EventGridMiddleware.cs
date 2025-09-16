@@ -85,8 +85,8 @@ public class EventGridMiddleware
         //
         // Validate the overall body size and the size of each event.
         //
-        const int maximumAllowedOverallMessageSizeInBytes = 1048576;
-        const int maximumAllowedEventGridEventSizeInBytes = 1048576;
+        const int maximumAllowedOverallMessageSizeInBytes = 1536000;
+        const int maximumAllowedEventGridEventSizeInBytes = 1049600;
 
         if (requestBody.Length > maximumAllowedOverallMessageSizeInBytes)
         {
